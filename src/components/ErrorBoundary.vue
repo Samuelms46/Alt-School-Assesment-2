@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import { onErrorCaptured, ref } from "vue";
+import { useRouter } from "vue-router";
 
 const hasError = ref(false);
 const error = ref<Error | null>(null);
+const router = useRouter();
 
 onErrorCaptured((err) => {
   hasError.value = true;

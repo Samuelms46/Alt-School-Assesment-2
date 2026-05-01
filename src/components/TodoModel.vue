@@ -10,6 +10,7 @@ interface FormData {
 
 interface Errors {
   name?: string;
+  submit?: string;
 }
 
 interface Props {
@@ -38,6 +39,7 @@ const formData = ref<FormData>({
 });
 
 const errors = ref<Errors>({});
+const isSubmitting = ref(false);
 
 // Populate form when editing
 watch([() => props.todo, () => props.mode, () => props.isOpen], () => {
@@ -64,10 +66,21 @@ const validate = (): boolean => {
 };
 
 // Handlers
-const handleSubmit = () => {
+const handleSubmit = async () => {
   if (!validate()) return;
-  emit("submit", formData.value);
-  errors.value = {};
+  isSubmitting.value = true;
+  errors.value.submit = "";
+
+  try {
+    emit("submit", formData.value);
+    errors.value = {};
+  } catch (error) {
+    errors.value.submit =
+      error instanceof Error ? error.message : "An error occurred";
+    console.error("Submit error:", error);
+  } finally {
+    isSubmitting.value = false;
+  }
 };
 
 const handleNameInput = (e: Event) => {
@@ -112,6 +125,11 @@ const handleNameInput = (e: Event) => {
             </span>
           </div>
 
+          <!-- Submit Error -->
+          <div v-if="errors.submit" class="form-group error-alert">
+            <p class="error-message">{{ errors.submit }}</p>
+          </div>
+
           <!-- Description -->
           <div class="form-group">
             <label for="description">Description</label>
@@ -143,8 +161,19 @@ const handleNameInput = (e: Event) => {
             <button type="button" @click="emit('close')" class="btn-cancel">
               Cancel
             </button>
-            <button type="button" @click="handleSubmit" class="btn-submit">
-              {{ props.mode === "create" ? "Create Todo" : "Update Todo" }}
+            <button
+              type="button"
+              @click="handleSubmit"
+              class="btn-submit"
+              :disabled="isSubmitting"
+            >
+              {{
+                isSubmitting
+                  ? "Submitting..."
+                  : props.mode === "create"
+                    ? "Create Todo"
+                    : "Update Todo"
+              }}
             </button>
           </div>
         </div>

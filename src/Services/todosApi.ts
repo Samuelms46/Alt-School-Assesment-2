@@ -134,16 +134,17 @@ export const todosApi = {
       console.log("Updating todo:", id, "with payload:", payload);
 
       const response = await fetch(`${BASE_URL}/tasks/${id}`, {
-        method: "PUT",
+        method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       });
 
-      console.log("Update response status:", response.status);
+      console.log("Update (PATCH) response status:", response.status);
 
       if (!response.ok) {
         await handleApiError(response, "Failed to update todo");
       }
+
       return response.json();
     } catch (error) {
       console.error("API Error (update):", error);
