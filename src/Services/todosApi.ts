@@ -1,4 +1,5 @@
-const BASE_URL = "https://api.oluwasetemi.dev";
+const BASE_URL =
+  import.meta.env.VITE_API_BASE_URL || "https://api.oluwasetemi.dev";
 
 // Types
 export interface TodoData {

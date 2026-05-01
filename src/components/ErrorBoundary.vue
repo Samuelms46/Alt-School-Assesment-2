@@ -6,6 +6,10 @@ const hasError = ref(false);
 const error = ref<Error | null>(null);
 const router = useRouter();
 
+const goHome = () => {
+  router.push("/");
+};
+
 onErrorCaptured((err) => {
   hasError.value = true;
   error.value = err instanceof Error ? err : new Error(String(err));
@@ -18,7 +22,7 @@ onErrorCaptured((err) => {
   <div v-if="hasError">
     <h1>Something went wrong</h1>
     <p>{{ error?.message }}</p>
-    <button type="button" @click="window.location.href = '/'">
+    <button type="button" @click="goHome">
       Go to Home
     </button>
   </div>
